@@ -1,7 +1,8 @@
 ﻿@page "/Account/LoginWithRecoveryCode"
+
 @using System.ComponentModel.DataAnnotations
-@using blazor.famely.calendar.Data
 @using Microsoft.AspNetCore.Identity
+@using blazor.authe.some.Data
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -37,10 +38,10 @@
     private ApplicationUser user = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; } = new InputModel();
+    private InputModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; }
+    private string? ReturnUrl { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,11 +52,11 @@
 
     private async Task OnValidSubmitAsync()
     {
-        string recoveryCode = Input.RecoveryCode.Replace(" ", String.Empty);
+        var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
 
         var result = await SignInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
 
-        string userId = await UserManager.GetUserIdAsync(user);
+        var userId = await UserManager.GetUserIdAsync(user);
 
         if (result.Succeeded)
         {

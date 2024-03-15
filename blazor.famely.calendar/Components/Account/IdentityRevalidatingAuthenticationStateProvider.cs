@@ -5,47 +5,43 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace blazor.famely.calendar.Components.Account
-{
-    // This is a server-side AuthenticationStateProvider that revalidates the security stamp for the connected user
+namespace blazor.famely.calendar.Components.Account;
+
+// This is a server-side AuthenticationStateProvider that revalidates the security stamp for the connected user
 // every 30 minutes an interactive circuit is connected.
-    internal sealed class IdentityRevalidatingAuthenticationStateProvider(
-        ILoggerFactory loggerFactory,
-        IServiceScopeFactory scopeFactory,
-        IOptions<IdentityOptions> options)
-        : RevalidatingServerAuthenticationStateProvider(loggerFactory)
+internal sealed class IdentityRevalidatingAuthenticationStateProvider(
+    ILoggerFactory loggerFactory,
+    IServiceScopeFactory scopeFactory,
+    IOptions<IdentityOptions> options)
+    : RevalidatingServerAuthenticationStateProvider(loggerFactory)
+{
+    protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
+
+    protected override async Task<bool> ValidateAuthenticationStateAsync(
+        AuthenticationState authenticationState, CancellationToken cancellationToken)
     {
-        protected override TimeSpan RevalidationInterval
+        // Get the user manager from a new scope to ensure it fetches fresh data
+        await using var scope = scopeFactory.CreateAsyncScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        return await ValidateSecurityStampAsync(userManager, authenticationState.User);
+    }
+
+    private async Task<bool> ValidateSecurityStampAsync(UserManager<ApplicationUser> userManager,
+        ClaimsPrincipal principal)
+    {
+        var user = await userManager.GetUserAsync(principal);
+        if (user is null)
         {
-            get => TimeSpan.FromMinutes(30);
+            return false;
         }
-
-        protected override async Task<bool> ValidateAuthenticationStateAsync(
-            AuthenticationState authenticationState, CancellationToken cancellationToken)
+        else if (!userManager.SupportsUserSecurityStamp)
         {
-            // Get the user manager from a new scope to ensure it fetches fresh data
-            await using var scope = scopeFactory.CreateAsyncScope();
-            UserManager<ApplicationUser> userManager =
-                scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            return await ValidateSecurityStampAsync(userManager, authenticationState.User);
+            return true;
         }
-
-        private async Task<bool> ValidateSecurityStampAsync(UserManager<ApplicationUser> userManager,
-            ClaimsPrincipal principal)
+        else
         {
-            var user = await userManager.GetUserAsync(principal);
-            if (user is null)
-            {
-                return false;
-            }
-
-            if (!userManager.SupportsUserSecurityStamp)
-            {
-                return true;
-            }
-
-            string? principalStamp = principal.FindFirstValue(options.Value.ClaimsIdentity.SecurityStampClaimType);
-            string userStamp = await userManager.GetSecurityStampAsync(user);
+            var principalStamp = principal.FindFirstValue(options.Value.ClaimsIdentity.SecurityStampClaimType);
+            var userStamp = await userManager.GetSecurityStampAsync(user);
             return principalStamp == userStamp;
         }
     }

@@ -1,7 +1,8 @@
 ﻿@page "/Account/LoginWith2fa"
+
 @using System.ComponentModel.DataAnnotations
-@using blazor.famely.calendar.Data
 @using Microsoft.AspNetCore.Identity
+@using blazor.authe.some.Data
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -48,13 +49,13 @@
     private ApplicationUser user = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; } = new InputModel();
+    private InputModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; }
+    private string? ReturnUrl { get; set; }
 
     [SupplyParameterFromQuery]
-    private bool RememberMe { get; }
+    private bool RememberMe { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,9 +66,9 @@
 
     private async Task OnValidSubmitAsync()
     {
-        string authenticatorCode = Input.TwoFactorCode!.Replace(" ", String.Empty).Replace("-", String.Empty);
+        var authenticatorCode = Input.TwoFactorCode!.Replace(" ", string.Empty).Replace("-", string.Empty);
         var result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, RememberMe, Input.RememberMachine);
-        string userId = await UserManager.GetUserIdAsync(user);
+        var userId = await UserManager.GetUserIdAsync(user);
 
         if (result.Succeeded)
         {

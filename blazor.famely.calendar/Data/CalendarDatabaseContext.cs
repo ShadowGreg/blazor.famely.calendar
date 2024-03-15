@@ -13,6 +13,14 @@ namespace blazor.famely.calendar.Data
         {
         }
         
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite( "DataSource=Data\\calendar.db;Cache=Shared");
+            }
+        }
+        
         public DbSet<Event> Events { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)

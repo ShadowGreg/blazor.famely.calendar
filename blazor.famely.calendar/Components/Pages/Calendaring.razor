@@ -1,6 +1,9 @@
 ﻿@page "/Calendaring"
 @using blazor.famely.calendar.Data.CalendarData
+@using blazor.famely.calendar.Data.Repositories
 @inject IDialogService DialogService
+@inherits OwningComponentBase
+s
 
 <h3>Calendaring</h3>
 
@@ -24,34 +27,42 @@
 </MudCalendar>
 
 @code{
+    private EfRepository Repository;
+    private List<Event> _events;
 
     private string GetColor(Color color)
     {
         return $"var(--mud-palette-{color.ToDescriptionString()})";
     }
 
-
-    private readonly List<Event> _events = new List<Event>
+    protected override void OnInitialized()
     {
-        new Event
-        {
-            Start = DateTime.Today.AddHours(10),
-            End = DateTime.Today.AddHours(11),
-            Title = "Event today",
-            Location = "Over here",
-            Text = "This is an event today",
-            Color = Color.Secondary
-        },
-        new Event
-        {
-            Start = DateTime.Today.AddDays(1).AddHours(11),
-            End = DateTime.Today.AddDays(1).AddHours(12.5),
-            Title = "Event tomorrow",
-            Location = "Over there",
-            Text = "This is an event tomorrow",
-            Color = Color.Tertiary
-        }
-    };
+        Repository = ScopedServices.GetRequiredService<EfRepository>();
+        _events = Repository.GetAllAsync().Result.ToList();
+    }
+
+
+    //     new List<Event>
+    // {
+    //     new Event
+    //     {
+    //         Start = DateTime.Today.AddHours(10),
+    //         End = DateTime.Today.AddHours(11),
+    //         Title = "Event today",
+    //         Location = "Over here",
+    //         Text = "This is an event today",
+    //         Color = Color.Secondary
+    //     },
+    //     new Event
+    //     {
+    //         Start = DateTime.Today.AddDays(1).AddHours(11),
+    //         End = DateTime.Today.AddDays(1).AddHours(12.5),
+    //         Title = "Event tomorrow",
+    //         Location = "Over there",
+    //         Text = "This is an event tomorrow",
+    //         Color = Color.Tertiary
+    //     }
+    // };
 
 
     private void CellClicked(DateTime dateTime)

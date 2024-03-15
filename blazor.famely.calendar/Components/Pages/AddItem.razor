@@ -1,10 +1,12 @@
 ﻿@page "/AddItem"
 @using System.ComponentModel.DataAnnotations
 @using blazor.famely.calendar.Data.CalendarData
+@using blazor.famely.calendar.Data.Domain
 @using blazor.famely.calendar.Data.Repositories
+@using MudBlazor.Utilities
 @rendermode InteractiveServer
-@inject EfRepository Repository
-@inject IDialogService DialogService
+@* @inject IDialogService DialogService *@
+@inherits OwningComponentBase
 
 
 <h3>AddItem</h3>
@@ -12,12 +14,12 @@
     <MudForm>
         <MudCardContent>
             <MudTextField T="string" @bind-Text="_title" Label="Заголовок события" Id="titleField"/>
-            <MudTextField T="string" @bind-Text="_text" Label="Заметка" Id="noteField"/>s
+            <MudTextField T="string" @bind-Text="_text" Label="Заметка" Id="noteField"/>
 
             <MudDatePicker Label="Дата"
                            PickerVariant="PickerVariant.Static"
                            Orientation="Orientation.Landscape"
-                           Date="@(DateTime.Today.AddDays(1))"
+                           @bind-Date="_date"
                            HelperText="@_bound"
                            Id="datePicker"/>
             <MudTimePicker Label="Время начала"
@@ -26,10 +28,18 @@
             <MudTimePicker Label="Время окончания"
                            Editable="true"
                            @bind-Time="_endTime"/>
-            <MudColorPicker Label="HSL"
-                            ColorPickerMode="ColorPickerMode.HSL"
-                            DisableModeSwitch="true"
-                            Id="ColorItem"/>
+
+            <MudChipSet @bind-SelectedChip="selected" Filter="true">
+                <MudChip Text="grey">Default</MudChip>
+                <MudChip Text="purple" Color="Color.Primary">Primary</MudChip>
+                <MudChip Text="pink" Color="Color.Secondary">Secondary</MudChip>
+                <MudChip Text="blue" Color="Color.Info">Info</MudChip>
+                <MudChip Text="green" Color="Color.Success">Success</MudChip>
+                <MudChip Text="orange" Color="Color.Warning">Warning</MudChip>
+                <MudChip Text="red" Color="Color.Error">Error</MudChip>
+                <MudChip Text="black" Color="Color.Dark">Dark</MudChip>
+            </MudChipSet>
+
             <MudButton
                 Variant="Variant.Filled"
                 Color="Color.Primary"
@@ -43,16 +53,27 @@
 
 
 @code {
+    private EfRepository _repository;
+    public MudChip? selected;
+
+
     private Event _newItem = new Event();
 
-    DateTime? _date = null;
+    DateTime? _date;
     TimeSpan? _startTime = new TimeSpan(00, 45, 00);
     TimeSpan? _endTime = new TimeSpan(00, 45, 00);
     private string _title = String.Empty;
     private string _text = String.Empty;
 
+   
+
     private const string DateFormat = "dd.MM.yyyy";
     readonly string _bound = "not set";
+
+    protected override void OnInitialized()
+    {
+        _repository = ScopedServices.GetRequiredService<EfRepository>();
+    }
 
     private async Task Submit()
     {
@@ -61,21 +82,32 @@
             throw new ValidationException("Date mus be not nullable");
         }
 
+
         _newItem.Title = _title;
         _newItem.Text = _text;
+        _newItem.Color = selected.Color;
         if (_date != null)
         {
             _newItem.Start = _date.Value.Date.Add(_startTime.Value);
-            _newItem.End = _date.Value.Date.Add(_endTime.Value);
+
+            TimeSpan? adjustedEndTime = _endTime ?? _startTime; // Use _startTime if _endTime is null
+
+            // Check if the end time is earlier than the start time
+            if (_startTime >= adjustedEndTime)
+            {
+                adjustedEndTime = _startTime + TimeSpan.FromHours(1);
+            }
+
+            _newItem.End = _date.Value.Date.Add((TimeSpan)adjustedEndTime!);
         }
 
-        var eventId = Repository.AddAsync(_newItem).Result;
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.ShowMessageBox("Cell Clicked", eventId, options: options);
+
+        var eventId = _repository.AddAsync(_newItem).Result;
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+        // DialogService.ShowMessageBox("Cell Clicked", eventId, options: options);
 
 
         //  Snackbar.Add("Submited!");
-
     }
 
 }

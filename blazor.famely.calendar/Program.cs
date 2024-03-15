@@ -1,6 +1,7 @@
 using blazor.famely.calendar.Components;
 using blazor.famely.calendar.Components.Account;
 using blazor.famely.calendar.Data;
+using blazor.famely.calendar.Data.Domain;
 using blazor.famely.calendar.Data.Repositories;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,15 +33,6 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
-
-
-string calendarConnectionString = builder.Configuration.GetConnectionString("CalendarConnection") ??
-                          throw new InvalidOperationException("Connection string 'CalendarConnection' not found.");
-builder.Services.AddDbContext<CalendarDatabaseContext>(options =>
-    options.UseSqlite(calendarConnectionString));
-
-builder.Services.AddScoped<EfRepository>();
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -49,6 +41,15 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+
+builder.Services.AddScoped<EfRepository>();
+
+string calendarConnectionString = builder.Configuration.GetConnectionString("CalendarConnection") ??
+                                  throw new InvalidOperationException("Connection string 'CalendarConnection' not found.");
+builder.Services.AddDbContext<CalendarDatabaseContext>(options =>
+    options.UseSqlite(calendarConnectionString));
+
 
 var app = builder.Build();
 

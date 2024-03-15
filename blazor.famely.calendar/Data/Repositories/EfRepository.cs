@@ -1,9 +1,9 @@
 ﻿using blazor.famely.calendar.Data.CalendarData;
-using Microsoft.EntityFrameworkCore;
+using blazor.famely.calendar.Data.Domain;
 
 namespace blazor.famely.calendar.Data.Repositories
 {
-    public class EfRepository
+    public class EfRepository : IRepository
     {
         private readonly CalendarDatabaseContext _databaseContext = new CalendarDatabaseContext();
         
@@ -19,6 +19,7 @@ namespace blazor.famely.calendar.Data.Repositories
                 throw new ArgumentNullException(nameof(newEvent), "Event cannot be null");
             }
             var eventReady = _databaseContext.Events.AddAsync(newEvent).Result.Entity;
+            _databaseContext.SaveChanges();
             return Task.FromResult(eventReady.IdKey);
         }
 
