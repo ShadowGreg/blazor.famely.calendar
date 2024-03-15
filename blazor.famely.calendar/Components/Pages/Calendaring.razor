@@ -3,7 +3,7 @@
 @using blazor.famely.calendar.Data.Repositories
 @inject IDialogService DialogService
 @inherits OwningComponentBase
-s
+
 
 <h3>Calendaring</h3>
 
@@ -40,29 +40,6 @@ s
         Repository = ScopedServices.GetRequiredService<EfRepository>();
         _events = Repository.GetAllAsync().Result.ToList();
     }
-
-
-    //     new List<Event>
-    // {
-    //     new Event
-    //     {
-    //         Start = DateTime.Today.AddHours(10),
-    //         End = DateTime.Today.AddHours(11),
-    //         Title = "Event today",
-    //         Location = "Over here",
-    //         Text = "This is an event today",
-    //         Color = Color.Secondary
-    //     },
-    //     new Event
-    //     {
-    //         Start = DateTime.Today.AddDays(1).AddHours(11),
-    //         End = DateTime.Today.AddDays(1).AddHours(12.5),
-    //         Title = "Event tomorrow",
-    //         Location = "Over there",
-    //         Text = "This is an event tomorrow",
-    //         Color = Color.Tertiary
-    //     }
-    // };
 
 
     private void CellClicked(DateTime dateTime)
