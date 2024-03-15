@@ -1,0 +1,53 @@
+﻿@page "/AddItem"
+@rendermode InteractiveServer
+
+<h3>AddItem</h3>
+<MudCard>
+    <MudForm>
+        <MudCardContent>
+            <MudTextField T="string" @bind-Text="@_title" Label="Заголовок события"/>
+            <MudTextField T="string" @bind-Text="@_text" Label="Заметка"/>
+
+            <MudDatePicker
+                PickerVariant="PickerVariant.Static"
+                Orientation="Orientation.Landscape"
+                Date="@(DateTime.Today.AddDays(1))"
+                HelperText="@_bound"/>
+            <MudSpacer/>
+            <MudTimePicker Label="Время начала"
+                           @bind-Time="_startTime"
+                           Editable="true"/>
+            <MudTimePicker Label="Время окончания"
+                           Editable="true"
+                           @bind-Time="_endTime"/>
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                Class="ml-auto"
+                OnClick="@(async () => await Submit())">
+                Сохранить
+            </MudButton>
+        </MudCardContent>
+    </MudForm>
+</MudCard>
+
+
+@code {
+
+    DateTime? _date = null;
+    TimeSpan? _startTime = new TimeSpan(00, 45, 00);
+    TimeSpan? _endTime = new TimeSpan(00, 45, 00);
+    private string _title = String.Empty;
+    private string _text = String.Empty;
+
+    private const string DateFormat = "dd.MM.yyyy";
+    string _bound = "not set";
+
+    private async Task Submit()
+    {
+
+        //  Snackbar.Add("Submited!");
+
+    }
+
+}

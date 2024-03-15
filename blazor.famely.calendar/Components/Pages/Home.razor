@@ -1,0 +1,10 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<MudTimePicker Label="12 hours" AmPm="true" @bind-Time="time" />
+
+@code
+{
+    private TimeSpan? time = null;
+}
