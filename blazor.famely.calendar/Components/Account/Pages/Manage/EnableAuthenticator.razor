@@ -1,11 +1,10 @@
 ﻿@page "/Account/Manage/EnableAuthenticator"
-
 @using System.ComponentModel.DataAnnotations
 @using System.Globalization
 @using System.Text
 @using System.Text.Encodings.Web
-@using Microsoft.AspNetCore.Identity
 @using blazor.famely.calendar.Data
+@using Microsoft.AspNetCore.Identity
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityUserAccessor UserAccessor
@@ -79,7 +78,7 @@ else
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private InputModel Input { get; } = new InputModel();
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,9 +90,9 @@ else
     private async Task OnValidSubmitAsync()
     {
         // Strip spaces and hyphens
-        var verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+        string verificationCode = Input.Code.Replace(" ", String.Empty).Replace("-", String.Empty);
 
-        var is2faTokenValid = await UserManager.VerifyTwoFactorTokenAsync(
+        bool is2faTokenValid = await UserManager.VerifyTwoFactorTokenAsync(
             user,
             UserManager.Options.Tokens.AuthenticatorTokenProvider,
             verificationCode);
@@ -105,7 +104,7 @@ else
         }
 
         await UserManager.SetTwoFactorEnabledAsync(user, true);
-        var userId = await UserManager.GetUserIdAsync(user);
+        string userId = await UserManager.GetUserIdAsync(user);
         Logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
         message = "Your authenticator app has been verified.";
@@ -123,8 +122,8 @@ else
     private async ValueTask LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user)
     {
         // Load the authenticator key & QR code URI to display on the form
-        var unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
-        if (string.IsNullOrEmpty(unformattedKey))
+        string? unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
+        if (String.IsNullOrEmpty(unformattedKey))
         {
             await UserManager.ResetAuthenticatorKeyAsync(user);
             unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
@@ -132,7 +131,7 @@ else
 
         sharedKey = FormatKey(unformattedKey!);
 
-        var email = await UserManager.GetEmailAsync(user);
+        string? email = await UserManager.GetEmailAsync(user);
         authenticatorUri = GenerateQrCodeUri(email!, unformattedKey!);
     }
 
@@ -156,7 +155,7 @@ else
 
     private string GenerateQrCodeUri(string email, string unformattedKey)
     {
-        return string.Format(
+        return String.Format(
             CultureInfo.InvariantCulture,
             AuthenticatorUriFormat,
             UrlEncoder.Encode("Microsoft.AspNetCore.Identity.UI"),

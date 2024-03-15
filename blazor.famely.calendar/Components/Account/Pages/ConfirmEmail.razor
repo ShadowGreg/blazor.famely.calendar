@@ -1,9 +1,8 @@
 ﻿@page "/Account/ConfirmEmail"
-
 @using System.Text
+@using blazor.famely.calendar.Data
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using blazor.famely.calendar.Data
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
@@ -20,10 +19,10 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromQuery]
-    private string? UserId { get; set; }
+    private string? UserId { get; }
 
     [SupplyParameterFromQuery]
-    private string? Code { get; set; }
+    private string? Code { get; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,7 +39,7 @@
         }
         else
         {
-            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+            string code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
             var result = await UserManager.ConfirmEmailAsync(user, code);
             statusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
         }

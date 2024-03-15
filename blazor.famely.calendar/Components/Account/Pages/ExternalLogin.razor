@@ -1,12 +1,11 @@
 ﻿@page "/Account/ExternalLogin"
-
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Claims
 @using System.Text
 @using System.Text.Encodings.Web
+@using blazor.famely.calendar.Data
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using blazor.famely.calendar.Data
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -54,18 +53,21 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private InputModel Input { get; } = new InputModel();
 
     [SupplyParameterFromQuery]
-    private string? RemoteError { get; set; }
+    private string? RemoteError { get; }
 
     [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; set; }
+    private string? ReturnUrl { get; }
 
     [SupplyParameterFromQuery]
-    private string? Action { get; set; }
+    private string? Action { get; }
 
-    private string? ProviderDisplayName => externalLoginInfo.ProviderDisplayName;
+    private string? ProviderDisplayName
+    {
+        get => externalLoginInfo.ProviderDisplayName;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,8 +104,8 @@
         var result = await SignInManager.ExternalLoginSignInAsync(
             externalLoginInfo.LoginProvider,
             externalLoginInfo.ProviderKey,
-            isPersistent: false,
-            bypassTwoFactor: true);
+            false,
+            true);
 
         if (result.Succeeded)
         {
@@ -127,7 +129,7 @@
 
     private async Task OnValidSubmitAsync()
     {
-        var emailStore = GetEmailStore();
+        IUserEmailStore<ApplicationUser> emailStore = GetEmailStore();
         var user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -141,11 +143,11 @@
             {
                 Logger.LogInformation("User created an account using {Name} provider.", externalLoginInfo.LoginProvider);
 
-                var userId = await UserManager.GetUserIdAsync(user);
-                var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                string userId = await UserManager.GetUserIdAsync(user);
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-                var callbackUrl = NavigationManager.GetUriWithQueryParameters(
+                string callbackUrl = NavigationManager.GetUriWithQueryParameters(
                     NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
                     new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
                 await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
@@ -153,15 +155,17 @@
                 // If account confirmation is required, we need to show the link if we don't have a real email sender
                 if (UserManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = Input.Email });
+                    RedirectManager.RedirectTo("Account/RegisterConfirmation",
+                        new Dictionary<string, object?>
+                            { ["email"] = Input.Email });
                 }
 
-                await SignInManager.SignInAsync(user, isPersistent: false, externalLoginInfo.LoginProvider);
+                await SignInManager.SignInAsync(user, false, externalLoginInfo.LoginProvider);
                 RedirectManager.RedirectTo(ReturnUrl);
             }
         }
 
-        message = $"Error: {string.Join(",", result.Errors.Select(error => error.Description))}";
+        message = $"Error: {String.Join(",", result.Errors.Select(error => error.Description))}";
     }
 
     private ApplicationUser CreateUser()

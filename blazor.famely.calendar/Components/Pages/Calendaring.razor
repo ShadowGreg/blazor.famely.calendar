@@ -2,7 +2,6 @@
 @using blazor.famely.calendar.Data.CalendarData
 @inject IDialogService DialogService
 
-
 <h3>Calendaring</h3>
 
 <MudCalendar
@@ -13,9 +12,9 @@
     DayTimeInterval="CalendarTimeInterval.Minutes15"
     MonthCellMinHeight="100">
     <CellTemplate>
-        <div style="width: 100%; height: 100%; border: 2px solid @GetColor(((CustomItem)context).Color)">
-            <div style="background-color: @GetColor(((CustomItem)context).Color)">
-                <MudText Style="color: #ffffff;" Typo="Typo.body1" Align="Align.Center">@(((CustomItem)context).Title)</MudText>
+        <div style="width: 100%; height: 100%; border: 2px solid @GetColor(((Event)context).Color)">
+            <div style="background-color: @GetColor(((Event)context).Color)">
+                <MudText Style="color: #ffffff;" Typo="Typo.body1" Align="Align.Center">@(((Event)context).Title)</MudText>
             </div>
             <div class="pa-2">
                 <MudText Typo="Typo.body2">@context.Text</MudText>
@@ -26,12 +25,15 @@
 
 @code{
 
-    private string GetColor(Color color) => $"var(--mud-palette-{color.ToDescriptionString()})";
-
-
-    private List<CustomItem> _events = new()
+    private string GetColor(Color color)
     {
-        new CustomItem
+        return $"var(--mud-palette-{color.ToDescriptionString()})";
+    }
+
+
+    private readonly List<Event> _events = new List<Event>
+    {
+        new Event
         {
             Start = DateTime.Today.AddHours(10),
             End = DateTime.Today.AddHours(11),
@@ -40,7 +42,7 @@
             Text = "This is an event today",
             Color = Color.Secondary
         },
-        new CustomItem
+        new Event
         {
             Start = DateTime.Today.AddDays(1).AddHours(11),
             End = DateTime.Today.AddDays(1).AddHours(12.5),
@@ -60,7 +62,7 @@
 
     private void ItemClicked(CalendarItem item)
     {
-        var newItem = item as CustomItem;
+        var newItem = item as Event;
         DialogService.ShowMessageBox($"{newItem!.Title}", item.Text);
     }
 

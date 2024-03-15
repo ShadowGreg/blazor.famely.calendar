@@ -1,8 +1,7 @@
 ﻿@page "/Account/Manage"
-
 @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
 @using blazor.famely.calendar.Data
+@using Microsoft.AspNetCore.Identity
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -42,7 +41,7 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private InputModel Input { get; } = new InputModel();
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,25 +1,35 @@
 ﻿@page "/AddItem"
+@using System.ComponentModel.DataAnnotations
+@using blazor.famely.calendar.Data.CalendarData
+@using blazor.famely.calendar.Data.Repositories
 @rendermode InteractiveServer
+@inject EfRepository Repository
+@inject IDialogService DialogService
+
 
 <h3>AddItem</h3>
 <MudCard>
     <MudForm>
         <MudCardContent>
-            <MudTextField T="string" @bind-Text="@_title" Label="Заголовок события"/>
-            <MudTextField T="string" @bind-Text="@_text" Label="Заметка"/>
+            <MudTextField T="string" @bind-Text="_title" Label="Заголовок события" Id="titleField"/>
+            <MudTextField T="string" @bind-Text="_text" Label="Заметка" Id="noteField"/>s
 
-            <MudDatePicker
-                PickerVariant="PickerVariant.Static"
-                Orientation="Orientation.Landscape"
-                Date="@(DateTime.Today.AddDays(1))"
-                HelperText="@_bound"/>
-            <MudSpacer/>
+            <MudDatePicker Label="Дата"
+                           PickerVariant="PickerVariant.Static"
+                           Orientation="Orientation.Landscape"
+                           Date="@(DateTime.Today.AddDays(1))"
+                           HelperText="@_bound"
+                           Id="datePicker"/>
             <MudTimePicker Label="Время начала"
                            @bind-Time="_startTime"
                            Editable="true"/>
             <MudTimePicker Label="Время окончания"
                            Editable="true"
                            @bind-Time="_endTime"/>
+            <MudColorPicker Label="HSL"
+                            ColorPickerMode="ColorPickerMode.HSL"
+                            DisableModeSwitch="true"
+                            Id="ColorItem"/>
             <MudButton
                 Variant="Variant.Filled"
                 Color="Color.Primary"
@@ -33,6 +43,7 @@
 
 
 @code {
+    private Event _newItem = new Event();
 
     DateTime? _date = null;
     TimeSpan? _startTime = new TimeSpan(00, 45, 00);
@@ -41,10 +52,27 @@
     private string _text = String.Empty;
 
     private const string DateFormat = "dd.MM.yyyy";
-    string _bound = "not set";
+    readonly string _bound = "not set";
 
     private async Task Submit()
     {
+        if (!_date.HasValue && !_startTime.HasValue && !_endTime.HasValue)
+        {
+            throw new ValidationException("Date mus be not nullable");
+        }
+
+        _newItem.Title = _title;
+        _newItem.Text = _text;
+        if (_date != null)
+        {
+            _newItem.Start = _date.Value.Date.Add(_startTime.Value);
+            _newItem.End = _date.Value.Date.Add(_endTime.Value);
+        }
+
+        var eventId = Repository.AddAsync(_newItem).Result;
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.ShowMessageBox("Cell Clicked", eventId, options: options);
+
 
         //  Snackbar.Add("Submited!");
 

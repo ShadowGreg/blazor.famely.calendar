@@ -1,9 +1,8 @@
 ﻿@page "/Account/ConfirmEmailChange"
-
 @using System.Text
+@using blazor.famely.calendar.Data
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using blazor.famely.calendar.Data
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -22,13 +21,13 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromQuery]
-    private string? UserId { get; set; }
+    private string? UserId { get; }
 
     [SupplyParameterFromQuery]
-    private string? Email { get; set; }
+    private string? Email { get; }
 
     [SupplyParameterFromQuery]
-    private string? Code { get; set; }
+    private string? Code { get; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,7 +46,7 @@
             return;
         }
 
-        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+        string code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
         var result = await UserManager.ChangeEmailAsync(user, Email, code);
         if (!result.Succeeded)
         {

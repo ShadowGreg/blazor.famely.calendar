@@ -1,7 +1,6 @@
 ﻿@page "/Account/Manage/ResetAuthenticator"
-
-@using Microsoft.AspNetCore.Identity
 @using blazor.famely.calendar.Data
+@using Microsoft.AspNetCore.Identity
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -39,7 +38,7 @@
         var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         await UserManager.SetTwoFactorEnabledAsync(user, false);
         await UserManager.ResetAuthenticatorKeyAsync(user);
-        var userId = await UserManager.GetUserIdAsync(user);
+        string userId = await UserManager.GetUserIdAsync(user);
         Logger.LogInformation("User with ID '{UserId}' has reset their authentication app key.", userId);
 
         await SignInManager.RefreshSignInAsync(user);

@@ -1,8 +1,7 @@
 ﻿@page "/Account/Manage/DeletePersonalData"
-
 @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
 @using blazor.famely.calendar.Data
+@using Microsoft.AspNetCore.Identity
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -47,11 +46,11 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private InputModel Input { get; set; } = new InputModel();
 
     protected override async Task OnInitializedAsync()
     {
-        Input ??= new();
+        Input ??= new InputModel();
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         requirePassword = await UserManager.HasPasswordAsync(user);
     }
@@ -72,7 +71,7 @@
 
         await SignInManager.SignOutAsync();
 
-        var userId = await UserManager.GetUserIdAsync(user);
+        string userId = await UserManager.GetUserIdAsync(user);
         Logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 
         RedirectManager.RedirectToCurrentPage();

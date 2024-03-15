@@ -1,5 +1,4 @@
-﻿
-<MudDialog>
+﻿<MudDialog>
     <DialogContent>
         Dialog Content
     </DialogContent>
@@ -11,8 +10,16 @@
 
 @code {
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    MudDialogInstance? MudDialog { get; set; }
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    void Cancel() => MudDialog.Cancel();
+    void Submit()
+    {
+        MudDialog!.Close(DialogResult.Ok(true));
+    }
+
+    void Cancel()
+    {
+        MudDialog!.Cancel();
+    }
+
 }
