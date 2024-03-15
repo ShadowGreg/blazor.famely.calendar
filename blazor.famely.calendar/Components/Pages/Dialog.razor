@@ -1,25 +1,36 @@
 ﻿<MudDialog>
     <DialogContent>
-        Dialog Content
+        <MudStack>
+            <MudText>@ContentTextFirstLine</MudText>
+            <MudText>@ContentTextSecondLine</MudText>
+            <MudText>@ContentTextTherdLine</MudText>
+        </MudStack>
+
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        @* <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton> *@
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter]
-    MudDialogInstance? MudDialog { get; set; }
+    MudDialogInstance MudDialog { get; set; }
 
-    void Submit()
-    {
-        MudDialog!.Close(DialogResult.Ok(true));
-    }
+    [Parameter]
+    public string ContentTextFirstLine { get; set; }
+    [Parameter]
+    public string ContentTextSecondLine { get; set; }
+    [Parameter]
+    public string ContentTextTherdLine { get; set; }
 
-    void Cancel()
-    {
-        MudDialog!.Cancel();
-    }
 
+    [Parameter]
+    public string ButtonText { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
 }

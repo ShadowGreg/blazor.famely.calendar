@@ -1,4 +1,5 @@
 ﻿@page "/Calendaring"
+@using System.Text
 @using blazor.famely.calendar.Data.CalendarData
 @using blazor.famely.calendar.Data.Repositories
 @inject IDialogService DialogService
@@ -9,7 +10,7 @@
 
 <MudCalendar
     Items="_events"
-    EnableDragItems="true"
+    EnableDragItems="false"
     CellClicked="CellClicked"
     ItemClicked="ItemClicked"
     DayTimeInterval="CalendarTimeInterval.Minutes15"
@@ -51,7 +52,22 @@
     private void ItemClicked(CalendarItem item)
     {
         var newItem = item as Event;
-        DialogService.ShowMessageBox($"{newItem!.Title}", item.Text);
+        
+        var parameters = new DialogParameters<Dialog>();
+        parameters.Add(x => x.ContentTextFirstLine,newItem.Title);
+        parameters.Add(x => x.ContentTextSecondLine,newItem.Text);
+        parameters.Add(x => x.ContentTextTherdLine,$"Начало: {newItem.Start},  окончание:{newItem.End}");
+        
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        string textbox = new StringBuilder(
+            newItem.Text + "\n"+
+            newItem.Start + "\n"+
+            newItem.End
+        ).ToString();
+        DialogService.Show<Dialog>("Событие", parameters, options);
+
     }
 
 }
