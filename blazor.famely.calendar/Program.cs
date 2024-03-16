@@ -50,8 +50,18 @@ string calendarConnectionString = builder.Configuration.GetConnectionString("Cal
 builder.Services.AddDbContext<CalendarDatabaseContext>(options =>
     options.UseSqlite(calendarConnectionString));
 
-
 var app = builder.Build();
+
+// Apply migrations
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+
+    var calendarDbContext = services.GetRequiredService<CalendarDatabaseContext>();
+    calendarDbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
