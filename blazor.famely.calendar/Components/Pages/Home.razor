@@ -44,3 +44,20 @@
         </ItemContent>
     </MudTimelineItem>
 </MudTimeline>
+
+<div class="d-flex justify-center">
+    <MudImage ObjectFit="ObjectFit.None"
+              ObjectPosition="@ObjectPosition.Center"
+              Src="https://i.postimg.cc/bJ4nwKhD/photo-2024-03-16-16-53-43.jpg"
+              Alt="Семейное фото бабайкеров"
+              Elevation="25"
+              Class="rounded-lg"/>
+</div>
+
+@code{ 
+    private bool arrows = true;
+    private bool bullets = true;
+    private bool enableSwipeGesture = true;
+    private bool autocycle = true;
+    private Transition transition = Transition.Slide;
+}
