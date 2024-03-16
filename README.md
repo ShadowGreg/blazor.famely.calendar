@@ -1,8 +1,4 @@
-The MIT License (MIT)
-Copyright © 2024 <copyright holders>
+Готовое решение для семейного домашнего календаря - это специальное приложение или программное обеспечение, которое позволяет всем членам семьи просматривать и уточнять расписание друг друга. Это удобный инструмент для планирования семейных мероприятий, встреч и обязанностей. Каждый член семьи может добавлять свои дела, указывать время и место, а также делиться информацией с другими участниками. Такой календарь обеспечивает прозрачность расписания семьи и помогает избежать конфликтов из-за недопонимания распорядка дня.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+A ready-made solution for a family home calendar is a special application or software that allows all family members to view and specify each other's schedules. It's a convenient tool for planning family events, meetings, and responsibilities. Each family member can add their tasks, specify time and location, and share information with other participants. Such a calendar provides transparency of the family schedule and helps avoid conflicts due to misunderstandings of the daily routine.
