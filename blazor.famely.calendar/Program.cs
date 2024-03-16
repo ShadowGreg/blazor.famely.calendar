@@ -31,7 +31,10 @@ builder.Services.AddAuthentication(options =>
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                           throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options
+        // .UseSqlite(connectionString)
+        .UseNpgsql(connectionString)
+    );
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -48,7 +51,10 @@ builder.Services.AddScoped<EfRepository>();
 string calendarConnectionString = builder.Configuration.GetConnectionString("CalendarConnection") ??
                                   throw new InvalidOperationException("Connection string 'CalendarConnection' not found.");
 builder.Services.AddDbContext<CalendarDatabaseContext>(options =>
-    options.UseSqlite(calendarConnectionString));
+    options
+        // .UseSqlite(calendarConnectionString)
+        .UseNpgsql(calendarConnectionString)
+    );
 
 var app = builder.Build();
 

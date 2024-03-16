@@ -17,7 +17,7 @@ namespace blazor.famely.calendar.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite( "DataSource=Data\\calendar.db;Cache=Shared");
+                optionsBuilder.UseSqlite( "Server=192.168.50.202;Port=5432;Database=calendar;User Id=postgres;Password=example;" );
             }
         }
         
