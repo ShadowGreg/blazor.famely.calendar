@@ -2,9 +2,12 @@
 @using System.ComponentModel.DataAnnotations
 @using blazor.famely.calendar.Data.CalendarData
 @using blazor.famely.calendar.Data.Repositories
+@using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @rendermode InteractiveServer
 @* @inject IDialogService DialogService *@
 @inherits OwningComponentBase
+@inject IDialogService DialogService
 
 
 <h3>Добавить событие</h3>
@@ -55,6 +58,8 @@
     private EfRepository _repository;
     public MudChip? selected;
 
+    protected NavigationManager _navigationManager;
+
 
     private Event _newItem = new Event();
 
@@ -64,20 +69,17 @@
     private string _title = String.Empty;
     private string _text = String.Empty;
 
-   
 
     private const string DateFormat = "dd.MM.yyyy";
     readonly string _bound = "not set";
 
-    protected override void OnInitialized()
-    {
+    protected override void OnInitialized() {
         _repository = ScopedServices.GetRequiredService<EfRepository>();
+        
     }
 
-    private async Task Submit()
-    {
-        if (!_date.HasValue && !_startTime.HasValue && !_endTime.HasValue)
-        {
+    private async Task Submit() {
+        if (!_date.HasValue && !_startTime.HasValue && !_endTime.HasValue) {
             throw new ValidationException("Date mus be not nullable");
         }
 
@@ -85,28 +87,31 @@
         _newItem.Title = _title;
         _newItem.Text = _text;
         _newItem.Color = selected.Color;
-        if (_date != null)
-        {
+        if (_date != null) {
             _newItem.Start = _date.Value.Date.Add(_startTime.Value);
 
             TimeSpan? adjustedEndTime = _endTime ?? _startTime; // Use _startTime if _endTime is null
 
             // Check if the end time is earlier than the start time
-            if (_startTime >= adjustedEndTime)
-            {
+            if (_startTime >= adjustedEndTime) {
                 adjustedEndTime = _startTime + TimeSpan.FromHours(1);
             }
 
             _newItem.End = _date.Value.Date.Add((TimeSpan)adjustedEndTime!);
         }
 
-
         var eventId = _repository.AddAsync(_newItem).Result;
-        // var options = new DialogOptions { CloseOnEscapeKey = true };
-        // DialogService.ShowMessageBox("Cell Clicked", eventId, options: options);
 
+        var parameters = new DialogParameters<Dialog>();
+        parameters.Add(x => x.ContentTextFirstLine, "Событие добавлено в бау данных");
+        parameters.Add(x => x.ContentTextSecondLine, $"{eventId}");
+        parameters.Add(x => x.ContentTextTherdLine, "Код события в базе данных");
 
-        //  Snackbar.Add("Submited!");
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        await DialogService.ShowAsync<Dialog>("Delete", parameters, options);
+        
+        
     }
-
+    
 }

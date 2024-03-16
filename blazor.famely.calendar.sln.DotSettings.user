@@ -2,4 +2,5 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\shado\.nuget\packages\heron.mudcalendar\1.1.1\lib\net7.0\Heron.MudCalendar.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\shado\.nuget\packages\mudblazor\6.17.0\lib\net8.0\MudBlazor.dll" /&gt;&#xD;
-&lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
+&lt;/AssemblyExplorer&gt;</s:String>
+	<s:Boolean x:Key="/Default/Monitoring/IsToolWindowHidden/@EntryValue">True</s:Boolean></wpf:ResourceDictionary>
