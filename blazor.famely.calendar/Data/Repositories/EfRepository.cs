@@ -22,6 +22,18 @@ namespace blazor.famely.calendar.Data.Repositories
             _databaseContext.SaveChanges();
             return Task.FromResult(eventReady.IdKey);
         }
+        
+        public Task<Event?> GetAsync(string id)
+        {
+            var result = _databaseContext.Events.Find(id);
+            if (result==null) {
+                throw new ArgumentNullException("Event not found");
+            }
+            
+            return Task.FromResult<Event?>(result);
+        }
+        
+        
 
     }
 }

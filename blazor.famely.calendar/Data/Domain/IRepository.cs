@@ -6,5 +6,7 @@ namespace blazor.famely.calendar.Data.Domain
     {
         Task<IEnumerable<Event>> GetAllAsync();
         Task<string> AddAsync(Event newEvent);
+        public Task<Event?> GetAsync(string id);
+
     }
 }

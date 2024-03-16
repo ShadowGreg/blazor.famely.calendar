@@ -1,11 +1,12 @@
 ﻿<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudNavLink Href="Calendaring" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.CalendarMonth">Calendaring</MudNavLink>
-    
+    <MudNavLink Href="AddItem" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PostAdd">Add Item</MudNavLink>
+    @*TODO bring string*@
     <AuthorizeView>
         <Authorized>
             <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">@context.User.Identity?.Name</MudNavLink>
-            <MudNavLink Href="AddItem" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PostAdd">Add Item</MudNavLink>
+            
         </Authorized>
         <NotAuthorized>
             <MudNavLink Href="Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Register</MudNavLink>

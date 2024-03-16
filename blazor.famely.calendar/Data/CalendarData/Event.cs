@@ -24,5 +24,7 @@ namespace blazor.famely.calendar.Data.CalendarData
             get => _idKey;
             set => _idKey = value;
         }
+
+        public string IsActually { get; set; } = String.Empty;
     }
 }

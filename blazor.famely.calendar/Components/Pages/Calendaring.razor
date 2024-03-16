@@ -61,11 +61,6 @@
 
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
 
-        string textbox = new StringBuilder(
-            newItem.Text + "\n"+
-            newItem.Start + "\n"+
-            newItem.End
-        ).ToString();
         DialogService.Show<Dialog>("Событие", parameters, options);
 
     }
