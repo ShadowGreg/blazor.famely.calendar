@@ -12,6 +12,15 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
   
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "postgres@domain.com"
+      PGADMIN_DEFAULT_PASSWORD: "password"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
   
   blazor_calendar:
     image: blazor.family.calendar.v.01
@@ -22,12 +31,8 @@ services:
     ports:
       - "8080:8080"
       - "8081:8081"
-    environment:
-      - DefaultConnection='postgres;Port=5432;Database=app;User Id=postgres;Password=example;'
-      - CalendarConnection='postgres;Port=5432;Database=calendar;User Id=postgres;Password=example;'    
     depends_on:
       - postgres
       
 volumes:
   postgres:
-    driver: local
