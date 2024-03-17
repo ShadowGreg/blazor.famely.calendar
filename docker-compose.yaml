@@ -5,14 +5,11 @@ services:
     image: blazor.family.calendar.v.01
     build:
       context: .
-      dockerfile: ./blazor.famely.calendar/Dockerfile
+      dockerfile: ./blazor.famely.calendar/Dockerfile    
     ports:
       - "8080:8080"
       - "8081:8081"
     environment:
-      - DefaultConnection='DataSource=/app/Data/app.db;Cache=Shared'
-      - CalendarConnection='DataSource=/app/Data/calendar.db;Cache=Shared'
-    volumes:
-      - "/home/greg/RiderProjects/blazor.famely.calendar/blazor.famely.calendar/Data/app.db:/app/Data/app.db"
-      - "/home/greg/RiderProjects/blazor.famely.calendar/blazor.famely.calendar/Data/calendar.db:/app/Data/calendar.db"
+      - DefaultConnection='Server=localhost;Port=5432;Database=app;User Id=postgres;Password=example;'
+      - CalendarConnection='Server=localhost;Port=5432;Database=calendar;User Id=postgres;Password=example;'    
     restart: always
