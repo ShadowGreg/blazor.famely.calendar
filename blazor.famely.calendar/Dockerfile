@@ -16,7 +16,7 @@ WORKDIR "/src/blazor.famely.calendar"
 RUN dotnet build "./blazor.famely.calendar.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
+ARG BUILD_CONFIGURATION=Development
 RUN dotnet publish "./blazor.famely.calendar.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final

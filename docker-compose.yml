@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    ports:
+      - '5455:5432'
+    image: postgres:12.3-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  
+  
+  blazor_calendar:
+    image: blazor.family.calendar.v.01
+    restart: always
+    build:
+      context: .
+      dockerfile: ./blazor.famely.calendar/Dockerfile    
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - DefaultConnection='postgres;Port=5432;Database=app;User Id=postgres;Password=example;'
+      - CalendarConnection='postgres;Port=5432;Database=calendar;User Id=postgres;Password=example;'    
+    depends_on:
+      - postgres
+      
+volumes:
+  postgres:
+    driver: local
