@@ -10,7 +10,6 @@
 @attribute [Authorize]
 
 
-
 <h3>Добавить событие</h3>
 
 <MudCard>
@@ -57,12 +56,13 @@
 
 @code {
     private EfRepository _repository;
+    private Color _color;
     public MudChip? selected;
 
     protected NavigationManager _navigationManager;
 
 
-    private Event _newItem = new Event();
+    private Event _newItem;
 
     DateTime? _date;
     TimeSpan? _startTime = new TimeSpan(00, 45, 00);
@@ -74,12 +74,15 @@
     private const string DateFormat = "dd.MM.yyyy";
     readonly string _bound = "not set";
 
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         _repository = ScopedServices.GetRequiredService<EfRepository>();
-        
+        selected = new MudChip();
+        _newItem = new Event();
     }
 
-    private async Task Submit() {
+    private async Task Submit()
+    {
         if (!_date.HasValue && !_startTime.HasValue && !_endTime.HasValue) {
             throw new ValidationException("Date mus be not nullable");
         }
@@ -87,9 +90,16 @@
 
         _newItem.Title = _title;
         _newItem.Text = _text;
-        _newItem.Color = selected.Color;
+        _newItem.Color = selected!.Color;
         if (_date != null) {
-            _newItem.Start = _date.Value.Date.Add(_startTime.Value);
+            var tempDate = _date.Value.Date.Add(_startTime.Value);
+
+            DateTime DateConvert(DateTime dateTime)
+            {
+                return DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+            }
+
+            _newItem.Start = DateConvert(tempDate);
 
             TimeSpan? adjustedEndTime = _endTime ?? _startTime; // Use _startTime if _endTime is null
 
@@ -98,8 +108,12 @@
                 adjustedEndTime = _startTime + TimeSpan.FromHours(1);
             }
 
-            _newItem.End = _date.Value.Date.Add((TimeSpan)adjustedEndTime!);
+            tempDate = _date.Value.Date.Add((TimeSpan)adjustedEndTime!);
+
+            _newItem.End = DateConvert(tempDate);
+
         }
+
 
         var eventId = _repository.AddAsync(_newItem).Result;
 
@@ -111,8 +125,8 @@
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
 
         await DialogService.ShowAsync<Dialog>("Delete", parameters, options);
-        
-        
+
+
     }
-    
+
 }
