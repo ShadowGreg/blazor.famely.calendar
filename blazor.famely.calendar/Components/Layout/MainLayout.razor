@@ -4,6 +4,9 @@
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
+
+
+
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
 <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
@@ -17,9 +20,16 @@
 
     <div class="sidebar mud-elevation-1">
         <div class="top-row mud-drawer-head">
-            <div>
-                <a class="navbar-brand" target="_blank">Семейный фотоальбом</a>
-            </div>
+            <AuthorizeView>
+                <Authorized>                    
+                    <div>
+                        <a class="navbar-brand" href="http://88.87.92.183:2342/library/browse" target="_blank">Семейный фотоальбом</a>                        
+                    </div>
+                </Authorized>
+                <Authorizing><div>Loading...</div></Authorizing>
+                <NotAuthorized><div>Not authenticated</div></NotAuthorized>
+            </AuthorizeView>
+           
         </div>
 
         <input type="checkbox" title="Navigation menu" class="navbar-toggler"/>

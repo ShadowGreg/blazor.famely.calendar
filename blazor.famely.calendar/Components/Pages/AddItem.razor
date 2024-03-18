@@ -65,20 +65,21 @@
     private Event _newItem;
 
     DateTime? _date;
-    TimeSpan? _startTime = new TimeSpan(00, 45, 00);
-    TimeSpan? _endTime = new TimeSpan(00, 45, 00);
-    private string _title = String.Empty;
-    private string _text = String.Empty;
+    TimeSpan? _startTime = DateTime.Now.TimeOfDay;
+    TimeSpan? _endTime = DateTime.Now.TimeOfDay;
+    private string? _title;
+    private string? _text;
 
-
-    private const string DateFormat = "dd.MM.yyyy";
     readonly string _bound = "not set";
 
     protected override void OnInitialized()
     {
         _repository = ScopedServices.GetRequiredService<EfRepository>();
         selected = new MudChip();
+        selected.Color = Color.Primary;
         _newItem = new Event();
+        _title = String.Empty;
+        _text = String.Empty;
     }
 
     private async Task Submit()
@@ -86,10 +87,8 @@
         if (!_date.HasValue && !_startTime.HasValue && !_endTime.HasValue) {
             throw new ValidationException("Date mus be not nullable");
         }
-
-
         _newItem.Title = _title;
-        _newItem.Text = _text;
+        _newItem.Text = _text!;
         _newItem.Color = selected!.Color;
         if (_date != null) {
             var tempDate = _date.Value.Date.Add(_startTime.Value);

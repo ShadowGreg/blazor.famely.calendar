@@ -23,7 +23,7 @@ services:
       - postgres
   
   blazor_calendar:
-    image: blazor.family.calendar.v.01
+    image: blazor.family.calendar.v.03
     restart: always
     build:
       context: .

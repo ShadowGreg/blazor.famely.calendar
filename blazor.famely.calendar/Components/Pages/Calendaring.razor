@@ -56,7 +56,7 @@
         var parameters = new DialogParameters<Dialog>();
         parameters.Add(x => x.ContentTextFirstLine,newItem.Title);
         parameters.Add(x => x.ContentTextSecondLine,newItem.Text);
-        parameters.Add(x => x.ContentTextTherdLine,$"Начало: {newItem.Start},  окончание:{newItem.End}");
+        parameters.Add(x => x.ContentTextTherdLine,$"Начало: {newItem.Start},  Окончание:{newItem.End}");
         
 
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
